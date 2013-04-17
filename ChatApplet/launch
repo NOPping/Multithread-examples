@@ -1,8 +1,0 @@
-#!/bin/bash
-DIR=`dirname $0`
-
-javac "$DIR/ChatApplet.java" -d "$DIR"
-cat "$DIR/Template.html" | sed -e "s/USERSNICK/$1/g" > "$DIR/$1.html"
-appletviewer -J"-Djava.security.policy=$DIR/all.policy" "$DIR/$1.html" &
-sleep 1
-rm -rf "$DIR/$1.html"
