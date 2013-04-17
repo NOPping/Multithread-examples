@@ -1,8 +1,19 @@
+/**
+ * This project is our own work. We have not recieved assistance beyond what is
+ * normal, and we have cited any sources from which we have borrowed. We have 
+ * not given a copy of our work, or a part of our work, to anyone. We are aware
+ * that copying or giving a copy may have serious consequences.
+ *
+ * @author Ian Duffy, 11356066
+ * @author Richard Kavanagh, 11482928
+ * @author Darren Brogan, 11424362
+ */
+
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
-
+/// Basic implementation of a chat server.
 public class ChatServer {
   public static void main(String[] args) {
     try {
@@ -37,6 +48,8 @@ public class ChatServer {
         
         // Start the thread.
         connection.start();
+        
+        System.out.println("Clients: " + connections.size());
       }
     } catch(IOException e) {
       // Display the error message and end.
@@ -45,6 +58,7 @@ public class ChatServer {
     }
   }
   
+  /// Bounded buffer of a fixed length.
   private static class BoundedBuffer {
     private String[] buffer;
     private int nextIn, nextOut, size, occupied, ins, outs;
@@ -62,7 +76,9 @@ public class ChatServer {
       outs        = 0;
     }
     
+    /// Removes a message from the buffer.
     synchronized String getMessage() {
+      // Wait until the buffer isn't empty.
       while(occupied == 0) {
         try {
           wait();
@@ -76,12 +92,15 @@ public class ChatServer {
       occupied--;
       outs++;
       
+      // Notify all other threads of completition.
       notifyAll();
       
       return contents;
     }
     
+    /// Adds a message to the buffer.
     synchronized void insertMessage(String message) {
+      // Wait until the buffer isn't full.
       while(occupied == size) {
         try{ 
           wait();
@@ -95,12 +114,15 @@ public class ChatServer {
       nextIn=(nextIn+1)%size;
       occupied++;
       ins++;
-    
+      
+      // Notify all other threads of competition.
       notifyAll();
     }
     
   }
   
+  /// The consumer gets messages from the buffer and sends them out to all
+  /// connections.
   private static class Consumer extends Thread {
     private Vector<Connection> connections;
     private BoundedBuffer buffer;
@@ -112,16 +134,24 @@ public class ChatServer {
     
     public void run() {
       while(true) {
+        // Get a message from the buffer.
         String message = buffer.getMessage();
+        // End it to all connections.
         sendAll(message);
       }
     }
     
     private void sendAll(String message) {
-      for(int i=connections.size()-1;i>=0;i--) {
+      for(int i=0;i<connections.size();i++) {
+        // Get the ith connection.
         Connection connection = connections.get(i);
+        
+        // Send a message to it.
         if(!connection.write(message)) {
+          // If the message failed to send to it assume that its dead and
+          // remove it from the vector.
           connections.remove(i);
+          System.out.println("Clients: " + connections.size());
         }
       }
     }
@@ -141,6 +171,7 @@ public class ChatServer {
         inputStream = new BufferedReader(
                                 new InputStreamReader(socket.getInputStream()));
         outputStream = new PrintWriter(socket.getOutputStream(), true);
+        nick="";
       } catch(IOException e) {
         System.out.println(e.getMessage());
       }
@@ -148,15 +179,22 @@ public class ChatServer {
     
     public void run() {
       try {
-          setNick(inputStream.readLine());
+          // Set the nick
+          while(nick.equals("")) setNick(inputStream.readLine());
+          
+          // Adds a message to inform of the users join to the buffer.
           buffer.insertMessage(nick + " Just joined the chatroom...");
           
+          // Gets the users messages and inserts them into the buffer.
           String input;
           while((input = inputStream.readLine()) != null) {
             buffer.insertMessage(nick + " says: " + input);
           }
           
-          buffer.insertMessage(nick + " Just left the chatroom...");
+          // Adds a message to inform of the users departure.
+          buffer.insertMessage(nick + " just left the chatroom...");
+          
+          // Close all the streams and socket.
           close();
         } catch(IOException e) {
           System.out.println(e.getMessage());
@@ -164,6 +202,7 @@ public class ChatServer {
         }
     }
     
+    /// Closes all the streams and socket.
     private void close() {
       try {
         socket.close();
@@ -175,14 +214,17 @@ public class ChatServer {
       }
     }
     
+    /// Returns the connections nick
     public String getNick() {
       return nick;
     }
 
+    /// Sets the connections nick
     public void setNick(String nick) {
-      this.nick = nick;
+      this.nick = nick.trim();
     }
     
+    /// Writes a message to the connection.
     public boolean write(String message) {
       outputStream.println(message);
       if(outputStream.checkError()) {
