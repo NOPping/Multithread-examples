@@ -24,7 +24,10 @@ the connections vector. Should if fail to send a message to a connection it will
 assume that the connection no longer exists and remove the connection from the
 vector.
 
-The connection simply represenets a client. It is made up of their socket, an
+The Connection simply represenets a client. It is made up of their socket, an
 input and output stream to that socket, and their nick. It waits for first valid
 input and sets this as the users nick, after that all input is assumed to be
-messages so they are inserted into the buffer. 
+messages so they are inserted into the buffer.
+
+The monitor is just used to supply a count of the amount of users currently on
+the server to the server operator.
