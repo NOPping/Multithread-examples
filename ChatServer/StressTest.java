@@ -5,6 +5,7 @@ public class StressTest {
   public static void main(String[] args) {
     while(true) {
       try {
+        Thread.sleep(100);
         StressClient client = new StressClient();
         client.start();
       } catch (Exception e) { }
@@ -30,8 +31,8 @@ class StressClient extends Thread {
   public void run() {
     try {
       while(true) {
-        pw.println("Hey!");
-        sleep(1000);
+        //pw.println("Hey!");
+        sleep(5000);
       }
     } catch(Exception e) { }
   }

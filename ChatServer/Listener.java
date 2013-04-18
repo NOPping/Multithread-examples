@@ -1,66 +1,82 @@
+/*
+-* This project is our own work. We have not recieved assistance beyond what is
+-* normal, and we have cited any sources from which we have borrowed. We have
+-* not given a copy of our work, or a part of our work, to anyone. We are aware
+-* that copying or giving a copy may have serious consequences.
+-*
+-* @author Ian Duffy, 11356066
+-* @author Richard Kavanagh, 11482928
+-* @author Darren Brogan, 11424362
+-*/
+
 import java.util.*;
-import java.net.*;
 import java.io.*;
 
+/**
+ * Listen for messages from the client. Forward them to the MessageServer.
+ */
 class Listener extends Thread {
+  // Reference to MessageServer.
   private MessageServer messageServer;
 
+  // Reference to Connection.
   private Connection connection;
 
-  private BufferedReader inputStream;
-
-  Listener() {
-    // Default constructor
-  }
+  // Input stream.
+  private BufferedReader instream;
 
   Listener(Connection connection, MessageServer messageServer) {
+    // Setup necessary references.
     this.connection = connection;
     this.messageServer = messageServer;
 
+    // Setup the instream.
     try {
-      Socket socket = connection.getSocket();
-      inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    } catch(IOException e) {
-      System.out.println(e.getMessage());
-    }
+      instream = new BufferedReader(
+        new InputStreamReader(connection.socket.getInputStream()));
+    } catch(Exception e) { }
   }
 
+  /// Listen for messages.
   public void run() {
     try {
-      String message;
-      while(connection.getNickname() == null) {
-        message = inputStream.readLine();
-        if(message == null || message.equals("")) {
-          close();
-          return;
-        }
-        connection.setNickname(message);
+      connection.nickname = instream.readLine();
+      if(messageServer.isFull()) {
+        connection.sender.addMessage("Server is at maximum capacity.");
+        sleep(100);
+        connection.close();
+      } else {
         messageServer.addConnection(connection);
-      }
+        messageServer.addMessage(connection.nickname
+                                 + " has joined the chatroom...");
+        while(!isInterrupted()) {
+          String message = instream.readLine();
 
-      messageServer.addMessage(connection.getNickname() + " has joined the chatroom...");
-      while(!isInterrupted()) {
-        Thread.sleep(100);
-        message = inputStream.readLine();
-        if(message == null) {
-          break;
-        } else if(!message.trim().equals("")) {
-          message = connection.getNickname() + " says: " + message;
-          messageServer.addMessage(message);
+          if(message == null) {
+            break;
+          } else {
+            message = message.trim();
+          }
+
+          if(message.equals("")) {
+            connection.sender.addMessage("You attempted to end an empty message");
+          } else {
+            message = connection.nickname + " says : " + message;
+            messageServer.addMessage(message);
+          }
         }
       }
-    } catch(Exception e) {
-    }
-    close();
+    } catch(Exception e) { }
+
+    connection.close();
+    connection.sender.interrupt();
     messageServer.deleteConnection(connection);
   }
 
-  private void close() {
+  /// Closes the instream.
+  public void close() {
     try {
-      inputStream.close();
-      connection.getSocket().close();
-      connection.getSender().interrupt();
-    } catch(IOException e) {
-    }
+      instream.close();
+    } catch(Exception e) { }
   }
 }
