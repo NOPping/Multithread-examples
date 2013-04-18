@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if [ $# -eq 0 ] ; then
+    echo 'Error! Usage: ./launchclient nick'
+    exit 0
+fi
+
 DIR=`dirname $0`
 
 javac "$DIR/ChatApplet/ChatApplet.java" -d "$DIR/ChatApplet"
