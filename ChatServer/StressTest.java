@@ -3,32 +3,36 @@ import java.net.*;
 
 public class StressTest {
     public static void main(String[] args) {
-        Socket s;
-        PrintWriter pw;
-        BufferedReader br;
-        int count = 0;
-        String host = "localhost";
-        int port = 7777;
-        String nickname = "test";
-        while(true) {
-            try {
-                count++;
-                Thread.sleep(300);
-                s = new Socket(host, port);
-                pw = new PrintWriter(s.getOutputStream(), true);
-                br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-
-                /* Send nickname to chat server */
-                pw.println(nickname);
-                pw.println("Sup?");
-                System.out.println(count);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                return;
-            } catch(InterruptedException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
-        }
+    	while(true) {
+			try {
+			StressClient client = new StressClient();
+			client.start();
+			} catch (Exception e) { }		
+		}
     }
+}
+
+class StressClient extends Thread {
+	private Socket s = null;
+	private PrintWriter pw = null;
+	private BufferedReader br = null;	
+
+	StressClient() {
+	try {
+		s = new Socket("localhost",7777);
+		pw = new PrintWriter(s.getOutputStream(), true);
+		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		pw.println(""+((int)(Math.random()*1000)+1000)+"user");
+		
+	} catch(Exception e) { }	
+	}
+	
+	public void run() {
+		try {
+		while(true) {
+			pw.println("Hey!");
+			sleep(1000);
+		}
+		} catch(Exception e) { }	
+	}
 }
