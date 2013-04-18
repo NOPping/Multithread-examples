@@ -6,4 +6,4 @@ javac "$DIR/ChatApplet/ChatApplet.java" -d "$DIR/ChatApplet"
 cat "$DIR/ChatApplet/Template.html" | sed -e "s/USERSNICK/$1/g" > "$DIR/ChatApplet/$1.html"
 appletviewer -J"-Djava.security.policy=$DIR/ChatApplet/all.policy" "$DIR/ChatApplet/$1.html" &
 sleep 1
-rm -rf "$DIR/ChatApplet/$1.html"
+rm "$DIR/ChatApplet/$1.html"
