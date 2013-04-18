@@ -1,10 +1,6 @@
-Chat Server
-===========
+Multithread Examples
+====================
 
-Simple chat server implemented using a buffer.
+Two mutlithread programming examples. 
 
-Start with:
-```java ChatServer```
-
-Connect a client with:
-```./launchclient <nickname>```
+Both are taken from assignments done within the Intro To Operating Systems Module(CA216) at DCU.
