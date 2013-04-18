@@ -13,7 +13,7 @@ public class StressTest {
         while(true) {
             try {
                 count++;
-                Thread.sleep(100);
+                Thread.sleep(300);
                 s = new Socket(host, port);
                 pw = new PrintWriter(s.getOutputStream(), true);
                 br = new BufferedReader(new InputStreamReader(s.getInputStream()));
