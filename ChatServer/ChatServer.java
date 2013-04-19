@@ -28,16 +28,28 @@ public class ChatServer {
     // Set the bind port.
     final int PORT = 7777;
 
+    // Initialize a IP for binding.
+    InetAddress address = null;
+    
     // Set the maxium amount of clients. Don't wish to eat up server resources
     // By spawning an infinte amount of threads.
-    final int MAXCLIENTS = 200;
+    final int MAXCLIENTS = 1000;
 
     // Initalize a socket for binding.
     ServerSocket serverSocket = null;
 
+
+    // Attempt to resolve and set the bind IP.
+    try {
+      address = InetAddress.getByName("localhost");
+    } catch(Exception e) {
+      System.out.println(e.getMessage());
+      System.exit(-1);
+    }
+
     try {
       // Attempt to bind the socket to the given port.
-      serverSocket = new ServerSocket(PORT);
+      serverSocket = new ServerSocket(PORT,0,address);
       System.out.println("Waiting for connections on " + PORT + ".");
     } catch(Exception e) {
       System.out.println("Failed to bind to " + PORT + ".");

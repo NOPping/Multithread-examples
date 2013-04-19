@@ -40,26 +40,39 @@ class Listener extends Thread {
   /// Listen for messages.
   public void run() {
     try {
+      // Set the nickname.
       connection.nickname = instream.readLine();
+      
+      // Check that the server isn't full.
       if(messageServer.isFull()) {
         connection.sender.addMessage("Server is at maximum capacity.");
         sleep(100);
         connection.close();
       } else {
+        
+        // Add the connection to the connections list
         messageServer.addConnection(connection);
         messageServer.addMessage(connection.nickname
                                  + " has joined the chatroom...");
+        
         while(!isInterrupted()) {
+          // Sleep for 100 milliseconds, don't want to hog the CPU.
+          sleep(100);
+          
+          // Read in input.
           String message = instream.readLine();
-
+          
+          // If input is null the client has disconnected.
           if(message == null) {
             break;
           } else {
             message = message.trim();
           }
-
+          
+          // Check that the message isn't empty.
           if(message.equals("")) {
-            connection.sender.addMessage("You attempted to end an empty message");
+            connection.sender.addMessage("You attempted to send an empty "
+                                         + "message");
           } else {
             message = connection.nickname + " says : " + message;
             messageServer.addMessage(message);

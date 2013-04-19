@@ -61,11 +61,16 @@ class ChatClient extends Panel implements Runnable {
     try {
       while (true) {
         message = br.readLine();
+        if(message == null) {
+          break;
+        }
         textarea.append(message + "\n");
       }
     } catch (IOException e) {
       System.out.println(e);
     }
+    
+    textarea.append("Connection to server was lost." + "\n");
   }
 }
 
