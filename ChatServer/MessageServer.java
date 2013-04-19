@@ -56,8 +56,19 @@ class MessageServer extends Thread {
       System.out.println("Clients: " + connections.size());
 
       // Inform all other connections.
-      addMessage(connection.nickname + " hsa left the chatroom...");
+      addMessage(connection.nickname + " has left the chatroom...");
     }
+  }
+
+  public synchronized Connection getConnection(String recipient) {
+    Connection result = null;
+    for(Connection connection : connections) {
+      if(connection.nickname.equals(recipient)) {
+        result = connection;
+        break;
+      }
+    }
+    return result;
   }
 
   /// Adds a message to the buffer.

@@ -81,6 +81,17 @@ class Listener extends Thread {
               messageServer.addMessage(connection.nickname + " has changed "
                                        + "their nickname to " + arguments);
               connection.nickname = arguments;
+            } else if(command.equals("/msg")) {
+              String [] splitArguments = arguments.split(" ", 2);
+              Connection recipient = messageServer.getConnection(splitArguments[0]);
+              String privateMessage = splitArguments[1];
+              if(recipient != null) {
+                recipient.sender.addMessage("Private message from "
+                                            + connection.nickname + ": "
+                                            + privateMessage);
+              } else {
+                connection.sender.addMessage("Error: Unknown nickname");
+              }
             }
           } else {
             message = connection.nickname + " says : " + message;
@@ -93,7 +104,6 @@ class Listener extends Thread {
   }
 
   public void interrupt() {
-    System.out.println("Attempting to end Listener");
     messageServer.deleteConnection(connection);
 
     try {
@@ -101,9 +111,8 @@ class Listener extends Thread {
       connection.sender.join();
     } catch(Exception e) { }
 
-    System.out.println("Ended Sender");
-
     connection.close();
+
     super.interrupt();
   }
 

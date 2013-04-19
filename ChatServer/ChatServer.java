@@ -33,7 +33,7 @@ public class ChatServer {
 
     // Set the maxium amount of clients. Don't wish to eat up server resources
     // By spawning an infinte amount of threads.
-    final int MAXCLIENTS = 1000;
+    final int MAXCLIENTS = 10;
 
     // Initalize a socket for binding.
     ServerSocket serverSocket = null;
