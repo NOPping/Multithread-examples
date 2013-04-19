@@ -74,32 +74,44 @@ class Listener extends Thread {
             connection.sender.addMessage("You attempted to send an empty "
                                          + "message");
           } else if(message.charAt(0) == '/') {
-            String [] splitMessage = message.split(" ", 2);
-            String command = splitMessage[0].toLowerCase();
-            String arguments = splitMessage[1];
-            if(command.equals("/nick")) {
-              messageServer.addMessage(connection.nickname + " has changed "
-                                       + "their nickname to " + arguments);
-              connection.nickname = arguments;
-            } else if(command.equals("/msg")) {
-              String [] splitArguments = arguments.split(" ", 2);
-              Connection recipient = messageServer.getConnection(splitArguments[0]);
-              String privateMessage = splitArguments[1];
-              if(recipient != null) {
-                recipient.sender.addMessage("Private message from "
-                                            + connection.nickname + ": "
-                                            + privateMessage);
-              } else {
-                connection.sender.addMessage("Error: Unknown nickname");
+            try {
+              String [] splitMessage = message.split(" ", 2);
+              String command = splitMessage[0].toLowerCase();
+              String arguments = splitMessage[1].trim();
+              if(command.equals("/nick")) {
+                messageServer.addMessage(connection.nickname + " has changed "
+                                         + "their nickname to " + arguments);
+                connection.nickname = arguments;
+              } else if(command.equals("/msg")) {
+                String [] splitArguments = arguments.split(" ", 2);
+                Connection recipient = messageServer.getConnection(
+                                         splitArguments[0]);
+                String privateMessage = splitArguments[1];
+                if(recipient != null) {
+                  recipient.sender.addMessage("Private message from "
+                                              + connection.nickname + ": "
+                                              + privateMessage);
+                } else {
+                  connection.sender.addMessage("Error: Unknown nickname");
+                }
+              } else if(command.equals("/me")) {
+                messageServer.addMessage(connection.nickname + " "
+                                         + arguments);
               }
+            } catch(Exception e) {
+              connection.sender.addMessage("Error! no arguments given");
+              continue;
             }
+
           } else {
-            message = connection.nickname + " says : " + message;
-            messageServer.addMessage(message);
+            messageServer.addMessage(connection.nickname + " says : "
+                                     + message);
           }
         }
       }
-    } catch(Exception e) { }
+    } catch(Exception e) {
+      System.out.println(e.getMessage());
+    }
     interrupt();
   }
 
