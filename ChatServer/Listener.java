@@ -42,37 +42,46 @@ class Listener extends Thread {
     try {
       // Set the nickname.
       connection.nickname = instream.readLine();
-      
+
       // Check that the server isn't full.
       if(messageServer.isFull()) {
         connection.sender.addMessage("Server is at maximum capacity.");
         sleep(100);
         connection.close();
       } else {
-        
+
         // Add the connection to the connections list
         messageServer.addConnection(connection);
         messageServer.addMessage(connection.nickname
                                  + " has joined the chatroom...");
-        
+
         while(!isInterrupted()) {
           // Sleep for 100 milliseconds, don't want to hog the CPU.
           sleep(100);
-          
+
           // Read in input.
           String message = instream.readLine();
-          
+
           // If input is null the client has disconnected.
           if(message == null) {
             break;
           } else {
             message = message.trim();
           }
-          
+
           // Check that the message isn't empty.
           if(message.equals("")) {
             connection.sender.addMessage("You attempted to send an empty "
                                          + "message");
+          } else if(message.charAt(0) == '/') {
+            String [] splitMessage = message.split(" ", 2);
+            String command = splitMessage[0].toLowerCase();
+            String arguments = splitMessage[1];
+            if(command.equals("/nick")) {
+              messageServer.addMessage(connection.nickname + " has changed "
+                                       + "their nickname to " + arguments);
+              connection.nickname = arguments;
+            }
           } else {
             message = connection.nickname + " says : " + message;
             messageServer.addMessage(message);
@@ -80,10 +89,22 @@ class Listener extends Thread {
         }
       }
     } catch(Exception e) { }
+    interrupt();
+  }
+
+  public void interrupt() {
+    System.out.println("Attempting to end Listener");
+    messageServer.deleteConnection(connection);
+
+    try {
+      connection.sender.interrupt();
+      connection.sender.join();
+    } catch(Exception e) { }
+
+    System.out.println("Ended Sender");
 
     connection.close();
-    connection.sender.interrupt();
-    messageServer.deleteConnection(connection);
+    super.interrupt();
   }
 
   /// Closes the instream.

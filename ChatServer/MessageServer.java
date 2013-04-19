@@ -69,11 +69,9 @@ class MessageServer extends Thread {
   }
 
   /// Waits until the buffer is not empty and then returns the first message.
-  public synchronized String getNextMessage() {
+  public synchronized String getNextMessage() throws InterruptedException {
     while(buffer.size() == 0) {
-      try {
-        wait();
-      } catch(Exception e) { }
+      wait();
     }
 
     // Get the message from the buffer.
@@ -88,7 +86,7 @@ class MessageServer extends Thread {
   /// Passes the message onto all the connections.
   private synchronized void sendMessageToAll(String message) {
     for(Connection connection : connections) {
-      connection.sender.sendMessage(message);
+      connection.sender.addMessage(message);
     }
   }
 

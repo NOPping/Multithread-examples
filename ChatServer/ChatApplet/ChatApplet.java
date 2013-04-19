@@ -8,7 +8,7 @@ import java.net.*;
 class ChatClient extends Panel implements Runnable {
   /* Display */
   private TextField textfield = new TextField();
-  private TextArea textarea = new TextArea();
+  private TextArea textarea = new TextArea("", 4, 30, TextArea.SCROLLBARS_VERTICAL_ONLY);
   private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
 
   /* Communication */
@@ -21,6 +21,8 @@ class ChatClient extends Panel implements Runnable {
     /* Set up display */
     setLayout(new BorderLayout());
     textarea.setFont(font);
+    textarea.setEditable(false);
+    
     textfield.setFont(font);
     add(BorderLayout.SOUTH, textfield);
     add(BorderLayout.CENTER, textarea);

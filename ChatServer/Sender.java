@@ -52,11 +52,9 @@ public class Sender extends Thread {
   }
 
   /// Waits until the buffer is not empty and then returns the first message.
-  public synchronized String getNextMessage() {
+  public synchronized String getNextMessage() throws InterruptedException {
     while(buffer.size() == 0) {
-      try {
-        wait();
-      } catch(Exception e) { }
+      wait();
     }
 
     // Get the message from the buffer.
@@ -86,13 +84,8 @@ public class Sender extends Thread {
 
         // Send to Client.
         sendMessage(message);
-
       }
     } catch(Exception e) { }
-
-    connection.close();
-    connection.sender.interrupt();
-    messageServer.deleteConnection(connection);
   }
 
   /// Closes the outstream.

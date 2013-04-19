@@ -32,7 +32,7 @@ class StressClient extends Thread {
     try {
       while(true) {
         //pw.println("Hey!");
-        sleep(5000);
+        sleep(10000);
       }
     } catch(Exception e) { }
   }

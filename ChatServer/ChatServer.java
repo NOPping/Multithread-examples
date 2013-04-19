@@ -30,7 +30,7 @@ public class ChatServer {
 
     // Initialize a IP for binding.
     InetAddress address = null;
-    
+
     // Set the maxium amount of clients. Don't wish to eat up server resources
     // By spawning an infinte amount of threads.
     final int MAXCLIENTS = 1000;
