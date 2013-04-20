@@ -16,7 +16,7 @@ import java.io.*;
 /**
  * Recives messages from MessageServer and sends them to the connection.
  */
-public class Sender extends Thread {
+public class Consumer extends Thread {
   // Reference to MessageServer.
   private MessageServer messageServer;
 
@@ -29,7 +29,7 @@ public class Sender extends Thread {
   // Output stream.
   private PrintWriter outstream;
 
-  Sender(Connection connection, MessageServer messageServer) {
+  Consumer(Connection connection, MessageServer messageServer) {
     // Setup necessary references.
     this.connection = connection;
     this.messageServer = messageServer;

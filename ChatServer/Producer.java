@@ -15,7 +15,7 @@ import java.io.*;
 /**
  * Listen for messages from the client. Forward them to the MessageServer.
  */
-class Listener extends Thread {
+class Producer extends Thread {
   // Reference to MessageServer.
   private MessageServer messageServer;
 
@@ -25,7 +25,7 @@ class Listener extends Thread {
   // Input stream.
   private BufferedReader instream;
 
-  Listener(Connection connection, MessageServer messageServer) {
+  Producer(Connection connection, MessageServer messageServer) {
     // Setup necessary references.
     this.connection = connection;
     this.messageServer = messageServer;
@@ -45,7 +45,7 @@ class Listener extends Thread {
 
       // Check that the server isn't full.
       if(messageServer.isFull()) {
-        connection.sender.addMessage("Server is at maximum capacity.");
+        connection.consumer.addMessage("Server is at maximum capacity.");
         sleep(100);
         connection.close();
       } else {
@@ -71,7 +71,7 @@ class Listener extends Thread {
 
           // Check that the message isn't empty.
           if(message.equals("")) {
-            connection.sender.addMessage("You attempted to send an empty "
+            connection.consumer.addMessage("You attempted to send an empty "
                                          + "message");
           } else if(message.charAt(0) == '/') {
             try {
@@ -88,18 +88,18 @@ class Listener extends Thread {
                                          splitArguments[0]);
                 String privateMessage = splitArguments[1];
                 if(recipient != null) {
-                  recipient.sender.addMessage("Private message from "
+                  recipient.consumer.addMessage("Private message from "
                                               + connection.nickname + ": "
                                               + privateMessage);
                 } else {
-                  connection.sender.addMessage("Error: Unknown nickname");
+                  connection.consumer.addMessage("Error: Unknown nickname");
                 }
               } else if(command.equals("/me")) {
                 messageServer.addMessage(connection.nickname + " "
                                          + arguments);
               }
             } catch(Exception e) {
-              connection.sender.addMessage("Error! no arguments given");
+              connection.consumer.addMessage("Error! no arguments given");
               continue;
             }
 
@@ -119,8 +119,8 @@ class Listener extends Thread {
     messageServer.deleteConnection(connection);
 
     try {
-      connection.sender.interrupt();
-      connection.sender.join();
+      connection.consumer.interrupt();
+      connection.consumer.join();
     } catch(Exception e) { }
 
     connection.close();

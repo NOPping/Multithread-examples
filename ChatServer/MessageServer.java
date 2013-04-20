@@ -97,7 +97,7 @@ class MessageServer extends Thread {
   /// Passes the message onto all the connections.
   private synchronized void sendMessageToAll(String message) {
     for(Connection connection : connections) {
-      connection.sender.addMessage(message);
+      connection.consumer.addMessage(message);
     }
   }
 

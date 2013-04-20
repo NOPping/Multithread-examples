@@ -17,9 +17,9 @@ import java.net.*;
  *  - Setting up the bind socket.
  *  - Starting the MessageServer thread.
  *  - Accepting new connections.
- *  - Creating listener and sender threads for all connections.
+ *  - Creating producer and consumer threads for all connections.
  *
- * MessageServer, Listener, and Sender all extend the thread class.
+ * MessageServer, Producer, and Consumer all extend the thread class.
  * This means that they can be executed in parallel. All shared resources,
  * Within the classes are marked synchronized as necessary.
  */
@@ -33,7 +33,7 @@ public class ChatServer {
 
     // Set the maxium amount of clients. Don't wish to eat up server resources
     // By spawning an infinte amount of threads.
-    final int MAXCLIENTS = 10;
+    final int MAXCLIENTS = 2000;
 
     // Initalize a socket for binding.
     ServerSocket serverSocket = null;
@@ -73,16 +73,16 @@ public class ChatServer {
 
         // Create a thread that will allow the connection to listen for
         // messages.
-        Listener listener = new Listener(connection, messageServer);
-        connection.listener = listener;
+        Producer producer = new Producer(connection, messageServer);
+        connection.producer = producer;
 
         // Create a thread that will allow the connection to send messages.
-        Sender sender = new Sender(connection, messageServer);
-        connection.sender = sender;
+        Consumer consumer = new Consumer(connection, messageServer);
+        connection.consumer = consumer;
 
-        // Start the sender and listener.
-        sender.start();
-        listener.start();
+        // Start the consumer and producer.
+        consumer.start();
+        producer.start();
       } catch(Exception e) {
         System.out.println(e.getMessage());
       }
