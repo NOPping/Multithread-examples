@@ -9,6 +9,13 @@ Start with:
 Connect a client with:
 ```./launchclient <nickname>```
 
+Declaration:
+------------
+This project is our own work. We have not recieved assistance beyond what is
+normal, and we have cited any sources from which we have borrowed. We have
+not given a copy of our work, or a part of our work, to anyone. We are aware
+that copying or giving a copy may have serious consequences.
+
 Authors:
 ---------
 
