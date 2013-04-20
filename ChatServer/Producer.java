@@ -73,36 +73,6 @@ class Producer extends Thread {
           if(message.equals("")) {
             connection.consumer.addMessage("You attempted to send an empty "
                                          + "message");
-          } else if(message.charAt(0) == '/') {
-            try {
-              String [] splitMessage = message.split(" ", 2);
-              String command = splitMessage[0].toLowerCase();
-              String arguments = splitMessage[1].trim();
-              if(command.equals("/nick")) {
-                messageServer.addMessage(connection.nickname + " has changed "
-                                         + "their nickname to " + arguments);
-                connection.nickname = arguments;
-              } else if(command.equals("/msg")) {
-                String [] splitArguments = arguments.split(" ", 2);
-                Connection recipient = messageServer.getConnection(
-                                         splitArguments[0]);
-                String privateMessage = splitArguments[1];
-                if(recipient != null) {
-                  recipient.consumer.addMessage("Private message from "
-                                              + connection.nickname + ": "
-                                              + privateMessage);
-                } else {
-                  connection.consumer.addMessage("Error: Unknown nickname");
-                }
-              } else if(command.equals("/me")) {
-                messageServer.addMessage(connection.nickname + " "
-                                         + arguments);
-              }
-            } catch(Exception e) {
-              connection.consumer.addMessage("Error! no arguments given");
-              continue;
-            }
-
           } else {
             messageServer.addMessage(connection.nickname + " says : "
                                      + message);
@@ -117,13 +87,12 @@ class Producer extends Thread {
 
   public void interrupt() {
     messageServer.deleteConnection(connection);
-
+    connection.close();
+    
     try {
       connection.consumer.interrupt();
       connection.consumer.join();
     } catch(Exception e) { }
-
-    connection.close();
 
     super.interrupt();
   }

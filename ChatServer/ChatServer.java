@@ -28,6 +28,9 @@ public class ChatServer {
     // Set the bind port.
     final int PORT = 7777;
 
+    // Set bind IP
+    final String ADDRESS = "127.0.0.1";
+
     // Initialize a IP for binding.
     InetAddress address = null;
 
@@ -41,7 +44,7 @@ public class ChatServer {
 
     // Attempt to resolve and set the bind IP.
     try {
-      address = InetAddress.getByName("localhost");
+      address = InetAddress.getByName(ADDRESS);
     } catch(Exception e) {
       System.out.println(e.getMessage());
       System.exit(-1);
@@ -76,7 +79,7 @@ public class ChatServer {
         Producer producer = new Producer(connection, messageServer);
         connection.producer = producer;
 
-        // Create a thread that will allow the connection to send messages.
+        // Create a thread that will allow the connection to receive messages.
         Consumer consumer = new Consumer(connection, messageServer);
         connection.consumer = consumer;
 
