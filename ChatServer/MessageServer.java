@@ -1,12 +1,8 @@
-/*
+/**
 -* This project is our own work. We have not recieved assistance beyond what is
 -* normal, and we have cited any sources from which we have borrowed. We have
 -* not given a copy of our work, or a part of our work, to anyone. We are aware
 -* that copying or giving a copy may have serious consequences.
--*
--* @author Ian Duffy, 11356066
--* @author Richard Kavanagh, 11482928
--* @author Darren Brogan, 11424362
 -*/
 
 import java.util.*;
@@ -18,15 +14,19 @@ import java.util.*;
  * MessageServer holds:
  * - A buffer of all messages.
  * - A list of all connections.
+ *
+ * @author Ian Duffy, 11356066
+ * @author Richard Kavanagh, 11482928
+ * @author Darren Brogan, 11424362
  */
-class MessageServer extends Thread {
-  // Message buffer.
+public class MessageServer extends Thread {
+  /// Message buffer.
   private ArrayList<String> buffer;
 
-  // Connection list.
+  /// Connection list.
   private ArrayList<Connection> connections;
 
-  // Maximum about of connections.
+  /// Maximum about of connections.
   private final int MAXCONNECTIONS;
 
   MessageServer(int MAXCONNECTIONS) {
@@ -59,18 +59,7 @@ class MessageServer extends Thread {
       addMessage(connection.nickname + " has left the chatroom...");
     }
   }
-
-  public synchronized Connection getConnection(String recipient) {
-    Connection result = null;
-    for(Connection connection : connections) {
-      if(connection.nickname.equals(recipient)) {
-        result = connection;
-        break;
-      }
-    }
-    return result;
-  }
-
+  
   /// Adds a message to the buffer.
   public synchronized void addMessage(String message) {
     buffer.add(message);
@@ -107,6 +96,7 @@ class MessageServer extends Thread {
   }
 
   /// Send messages from the buffer to clients.
+  @Override
   public void run() {
     while(true) {
       try {

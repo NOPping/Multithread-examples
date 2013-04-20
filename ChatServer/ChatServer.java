@@ -1,12 +1,8 @@
-/*
+/**
 -* This project is our own work. We have not recieved assistance beyond what is
 -* normal, and we have cited any sources from which we have borrowed. We have
 -* not given a copy of our work, or a part of our work, to anyone. We are aware
 -* that copying or giving a copy may have serious consequences.
--*
--* @author Ian Duffy, 11356066
--* @author Richard Kavanagh, 11482928
--* @author Darren Brogan, 11424362
 -*/
 
 import java.net.*;
@@ -22,8 +18,13 @@ import java.net.*;
  * MessageServer, Producer, and Consumer all extend the thread class.
  * This means that they can be executed in parallel. All shared resources,
  * Within the classes are marked synchronized as necessary.
+ *
+ * @author Ian Duffy, 11356066
+ * @author Richard Kavanagh, 11482928
+ * @author Darren Brogan, 11424362
  */
 public class ChatServer {
+  /// Main function.
   public static void main(String[] args) {
     // Set the bind port.
     final int PORT = 7777;

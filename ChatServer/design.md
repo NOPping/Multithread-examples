@@ -1,33 +1,157 @@
-Design
-=========
+Chat Server
+===========
 
-Our chat server is made up of the following:
+Simple chat server with multithreading.
 
-  - A Vector for holding all the connections.
-  - A Buffer that stores the clients messages.
-  - A Consumer that takes messages from the buffer and sends them to each 
-    connection/client.
-  - A Connection that represents each client. It inserts messages into the
-    buffer.
-  - A Monitor thread that outputs a client count to the server operator.
+Start with:
+```java ChatServer```
 
-We used a vector for storing the connections as a vector is a dynamic and
-synchronized datastore. This means our multiple threads can read and modify it
-without any issues.
+Connect a client with:
+```./launchclient <nickname>```
 
-The Buffer is taken from the last CA216 assignment. The only modification to it
-is that it holds Strings insteads of Integers. The Buffer is used to queue the
-clients messages while the consumer outputs them.
+Authors:
+---------
 
-The Consumer takes messages from the buffer and sends them to each client in
-the connections vector. Should if fail to send a message to a connection it will
-assume that the connection no longer exists and remove the connection from the
-vector.
+ - Ian Duffy, 11356066
+ - Richard Kavanagh, 11482928
+ - Darren Brogan, 11424362
 
-The Connection simply represenets a client. It is made up of their socket, an
-input and output stream to that socket, and their nick. It waits for first valid
-input and sets this as the users nick, after that all input is assumed to be
-messages so they are inserted into the buffer.
+Design:
+-------
 
-The monitor is just used to supply a count of the amount of users currently on
-the server to the server operator.
+Our chat server is made up four different classes:
+
+ - MessageServer
+ - Connection
+ - Consumer
+ - Producer
+
+Consumer, Producer and MessageServer are all extentions of the thread class.
+This allows them to run in parallel.
+
+### MessageServer
+
+MessageServer is responsible for recieving and sending all of the clients
+messages.
+
+Messages get inserted into its buffer from the producer via the
+```addMesage(String message)``` method.
+
+Messages are served to the consumers buffers when messages are available.
+
+### Private attributes
+    ArrayList< String > buffer
+Message buffer. 
+
+    ArrayList< Connection > connections
+Connection list. 
+
+    final int MAXCONNECTIONS
+Maximum about of connections. 
+
+#### Public Member Functions
+    synchronized void addConnection (Connection connection)
+Adds a new connection to the connections list. 
+
+    synchronized void deleteConnection (Connection connection)
+Deletes a connection from the connections list. 
+    
+    synchronized void addMessage (String message)
+Adds a message to the buffer. 
+
+    synchronized String getNextMessage ()  throws InterruptedException 
+Waits until the buffer is not empty and then returns the first message. 
+
+    synchronized boolean isFull ()
+Reports whether or not the server is at maximum connections. 
+
+    void run ()
+Send messages from the buffer to clients. 
+
+#### Private Member Functions
+    synchronized void sendMessageToAll (String message)
+Passes the message onto all the connections. 
+
+### Connection
+
+Connection is a structure that holds all information that is related to a
+connection this includes the socket, producer, consumer and a nickname.
+
+#### Public Attributes
+    Socket socket = null
+Socket to the clients connection. 
+
+    Producer producer = null
+Producer for listen for messages from the client. 
+
+    Consumer consumer = null
+Consumer to send messages to the client. 
+
+    String nickname = null
+The clients nickname. 
+
+#### Public Member Functions
+    void close ()
+Closes all the streams involved in the connection. 
+
+### Producer
+
+Recives messages from the Connection and sends them to MessageServer.
+
+#### Private Attributes
+    MessageServer messageServer
+Reference to MessageServer. 
+
+    Connection connection
+Reference to Connection. 
+
+    BufferedReader instream
+Input stream. 
+
+#### Public Member Functions
+    void run ()
+Listen for messages. 
+
+    void interrupt ()
+Overrides the default thread interrupt to:
+
+ - Remove the connection from the messageServer list of connections.
+ - Close all the streams involved with the connection.
+ - Interrupt the consumer for the connection.
+
+    void close ()
+Closes the instream. 
+
+### Consumer 
+
+Recives messages from MessageServer and stores them in a buffer which is
+evenutally sent to the client.
+
+#### Private Attributes
+    MessageServer messageServer
+Reference to MessageServer. 
+
+    Connection connection
+Reference to Connection. 
+
+    ArrayList< String > buffer
+Buffer of messages. 
+
+    PrintWriter outstream
+Output stream. 
+
+#### Public Member Functions
+    synchronized void addMessage (String message)
+Adds a message to the buffer. 
+
+    synchronized String getNextMessage ()  throws InterruptedException 
+Waits until the buffer is not empty and then returns the first message. 
+
+    void sendMessage (String message)
+Sends a message to the client. 
+
+    void run ()
+Send messages from the buffer to clients. 
+
+    void close ()
+Closes the outstream.

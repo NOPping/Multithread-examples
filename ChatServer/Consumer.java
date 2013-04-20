@@ -1,12 +1,8 @@
-/*
+/**
 -* This project is our own work. We have not recieved assistance beyond what is
 -* normal, and we have cited any sources from which we have borrowed. We have
 -* not given a copy of our work, or a part of our work, to anyone. We are aware
 -* that copying or giving a copy may have serious consequences.
--*
--* @author Ian Duffy, 11356066
--* @author Richard Kavanagh, 11482928
--* @author Darren Brogan, 11424362
 -*/
 
 import java.util.*;
@@ -14,19 +10,24 @@ import java.net.*;
 import java.io.*;
 
 /**
- * Recives messages from MessageServer and sends them to the connection.
+ * Recives messages from MessageServer and stores them in a buffer which is
+ * evenutally sent to the client.
+ *
+ * @author Ian Duffy, 11356066
+ * @author Richard Kavanagh, 11482928
+ * @author Darren Brogan, 11424362
  */
 public class Consumer extends Thread {
-  // Reference to MessageServer.
+  /// Reference to MessageServer.
   private MessageServer messageServer;
 
-  // Reference to Connection.
+  /// Reference to Connection.
   private Connection connection;
 
-  // Buffer of messages.
+  /// Buffer of messages.
   private ArrayList<String> buffer;
 
-  // Output stream.
+  /// Output stream.
   private PrintWriter outstream;
 
   Consumer(Connection connection, MessageServer messageServer) {
@@ -73,6 +74,7 @@ public class Consumer extends Thread {
   }
 
   /// Send messages from the buffer to clients.
+  @Override
   public void run() {
     try {
       while(!isInterrupted()) {

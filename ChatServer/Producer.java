@@ -3,26 +3,27 @@
 -* normal, and we have cited any sources from which we have borrowed. We have
 -* not given a copy of our work, or a part of our work, to anyone. We are aware
 -* that copying or giving a copy may have serious consequences.
--*
--* @author Ian Duffy, 11356066
--* @author Richard Kavanagh, 11482928
--* @author Darren Brogan, 11424362
 -*/
 
 import java.util.*;
+import java.net.*;
 import java.io.*;
 
 /**
- * Listen for messages from the client. Forward them to the MessageServer.
+ * Recives messages from the Connection and sends them to MessageServer.
+ *
+ * @author Ian Duffy, 11356066
+ * @author Richard Kavanagh, 11482928
+ * @author Darren Brogan, 11424362
  */
-class Producer extends Thread {
-  // Reference to MessageServer.
+public class Producer extends Thread {
+  /// Reference to MessageServer.
   private MessageServer messageServer;
 
-  // Reference to Connection.
+  /// Reference to Connection.
   private Connection connection;
 
-  // Input stream.
+  /// Input stream.
   private BufferedReader instream;
 
   Producer(Connection connection, MessageServer messageServer) {
@@ -85,6 +86,11 @@ class Producer extends Thread {
     interrupt();
   }
 
+  /// Overrides the default thread interrupt to
+  ///   - Remove the connection from the messageServer list of connections.
+  ///   - Close all the streams involved with the connection.
+  ///   - Interrupt the consumer for the connection.
+  @Override
   public void interrupt() {
     messageServer.deleteConnection(connection);
     connection.close();
