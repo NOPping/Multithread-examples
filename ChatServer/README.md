@@ -1,7 +1,7 @@
 Chat Server
 ===========
 
-Simple chat server implemented using a buffer.
+Simple chat server with multithreading.
 
 Start with:
 ```java ChatServer```
