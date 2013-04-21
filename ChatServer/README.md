@@ -9,6 +9,9 @@ Start with:
 Connect a client with:
 ```./launchclient <nickname>```
 
+
+![Data Flow](http://imduffy15.github.io/Multithread-examples/ChatServer/DataFlow.png)
+
 Declaration:
 ------------
 This project is our own work. We have not recieved assistance beyond what is
