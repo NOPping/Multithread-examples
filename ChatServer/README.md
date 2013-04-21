@@ -10,7 +10,7 @@ Connect a client with:
 ```./launchclient <nickname>```
 
 
-![Data Flow](http://imduffy15.github.io/Multithread-examples/ChatServer/DataFlow.png)
+![Data Flow](http://student.computing.dcu.ie/~duffyi3/ChatServer/DataFlow.png)
 
 Declaration:
 ------------

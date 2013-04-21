@@ -42,4 +42,10 @@ line of text results in a horizontal scroll occuring.
 ## Chat applet doesn't handle disconnects well.
 
 The chat applet has a while true loop for the stream of data from the server.
-This should be something like while br.readLine() != null 
+This should be something like while br.readLine() != null
+
+## Chat applet has character encoding issues. 
+The chat applet does not set a character encoding to be used for the
+string to byte conversation on the input and output streams. The default
+operating system character code is used. This means some messages might get
+distorted. 

@@ -13,12 +13,12 @@ Our chat server is made up four different classes:
  - Consumer
  - Producer
 
-Consumer, Producer and MessageServer are all extentions of the thread class.
+Consumer, Producer and MessageServer are all extensions of the thread class.
 This allows them to run in parallel.
 
 ### MessageServer
 
-MessageServer is responsible for recieving and sending all of the clients
+MessageServer is responsible for receiving and sending all of the clients
 messages.
 
 Messages get inserted into its buffer from the producer via the
@@ -83,7 +83,7 @@ Closes all the streams involved in the connection.
 
 ### Producer
 
-Recieves messages from the Connection and sends them to MessageServer.
+Receives messages from the Connection and sends them to MessageServer.
 
 #### Private Attributes
     MessageServer messageServer
@@ -111,16 +111,10 @@ Closes the instream.
 
 ### Consumer 
 
-Recieves messages from MessageServer and stores them in a buffer which is
+Receives messages from MessageServer and stores them in a buffer which is
 eventually sent to the client.
 
 #### Private Attributes
-    MessageServer messageServer
-Reference to MessageServer. 
-
-    Connection connection
-Reference to Connection. 
-
     ArrayList< String > buffer
 Buffer of messages. 
 

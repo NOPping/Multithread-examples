@@ -17,8 +17,8 @@ import java.util.*;
  *  - Accepting new connections.
  *  - Creating producer and consumer threads for all connections.
  *
- * MessageServer, Producer, and Consumer all extend the thread class.
- * This means that they can be executed in parallel.
+ * Consumer, Producer and MessageServer are all extensions of the thread class.
+ * This allows them to run in parallel.
  *
  * @author Ian Duffy, 11356066
  * @author Richard Kavanagh, 11482928
@@ -38,7 +38,7 @@ public class ChatServer {
 
     // Set the maxium amount of clients. Don't wish to eat up server resources
     // By spawning an infinte amount of threads.
-    final int MAXCLIENTS = 2000;
+    final int MAXCLIENTS = 800;
 
     // Initalize a socket for binding.
     ServerSocket serverSocket = null;
@@ -95,7 +95,7 @@ public class ChatServer {
   }
 
   /**
-   * MessageServer is responsible for recieving and sending all of the clients
+   * MessageServer is responsible for receivings and sending all of the clients
    * messages.
    *
    * MessageServer holds:
@@ -232,7 +232,7 @@ public class ChatServer {
   }
 
   /**
-   * Recieves messages from MessageServer and stores them in a buffer which is
+   * Receives messages from MessageServer and stores them in a buffer which is
    * eventually sent to the client.
    */
   private static class Consumer extends Thread {
@@ -312,7 +312,7 @@ public class ChatServer {
   }
 
   /**
-   * Recieves messages from the Connection and sends them to MessageServer.
+   * Receives messages from the Connection and sends them to MessageServer.
    */
   private static class Producer extends Thread {
     /// Reference to MessageServer.
