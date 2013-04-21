@@ -82,7 +82,7 @@ public class ChatServer {
         connection.producer = producer;
 
         // Create a thread that will allow the connection to receive messages.
-        Consumer consumer = new Consumer(connection, messageServer);
+        Consumer consumer = new Consumer(connection);
         connection.consumer = consumer;
 
         // Start the consumer and producer.
@@ -195,7 +195,9 @@ public class ChatServer {
 
           // Send to Client.
           sendMessageToAll(message);
-        } catch(Exception e) { }
+        } catch(Exception e) {
+          System.out.println(e.getMessage());
+        }
       }
     }
   }
@@ -231,7 +233,9 @@ public class ChatServer {
         producer.close();
         consumer.close();
         socket.close();
-      } catch(Exception e) { }
+      } catch(IOException e) {
+        System.out.println(e.getMessage());
+      }
     }
   }
 
@@ -244,30 +248,24 @@ public class ChatServer {
    * @author Darren Brogan, 11424362
    */
   private static class Consumer extends Thread {
-    /// Reference to MessageServer.
-    private MessageServer messageServer;
-
-    /// Reference to Connection.
-    private Connection connection;
-
     /// Buffer of messages.
     private ArrayList<String> buffer;
 
     /// Output stream.
     private PrintWriter outstream;
 
-    Consumer(Connection connection, MessageServer messageServer) {
-      // Setup necessary references.
-      this.connection = connection;
-      this.messageServer = messageServer;
-
+    Consumer(Connection connection) {
       // Setup a message buffer.
       this.buffer = new ArrayList<String>();
 
       // Setup outstream.
       try {
-        this.outstream = new PrintWriter(connection.socket.getOutputStream());
-      } catch(Exception e) { }
+        this.outstream = new PrintWriter(
+          new OutputStreamWriter(connection.socket.getOutputStream(), "UTF-8")
+        );
+      } catch(Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
 
     /// Adds a message to the buffer.
@@ -313,14 +311,14 @@ public class ChatServer {
           // Send to Client.
           sendMessage(message);
         }
-      } catch(Exception e) { }
+      } catch(InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
 
     /// Closes the outstream.
     public void close() {
-      try {
         outstream.close();
-      } catch(Exception e) { }
     }
   }
 
@@ -349,8 +347,11 @@ public class ChatServer {
       // Setup the instream.
       try {
         instream = new BufferedReader(
-          new InputStreamReader(connection.socket.getInputStream()));
-      } catch(Exception e) { }
+          new InputStreamReader(connection.socket.getInputStream(), "UTF-8")
+        );
+      } catch(IOException e) {
+        System.out.println(e.getMessage());
+      }
     }
 
     /// Listen for messages.
@@ -395,7 +396,9 @@ public class ChatServer {
             }
           }
         }
-      } catch(Exception e) {
+      } catch(IOException e) {
+        System.out.println(e.getMessage());
+      } catch(InterruptedException e) {
         System.out.println(e.getMessage());
       }
       interrupt();
@@ -413,7 +416,9 @@ public class ChatServer {
       try {
         connection.consumer.interrupt();
         connection.consumer.join();
-      } catch(Exception e) { }
+      } catch(Exception e) {
+        System.out.println(e.getMessage());
+      }
 
       super.interrupt();
     }
@@ -422,7 +427,9 @@ public class ChatServer {
     public void close() {
       try {
         instream.close();
-      } catch(Exception e) { }
+      } catch(IOException e) {
+        System.out.println(e.getMessage());
+      }
     }
   }
 }
