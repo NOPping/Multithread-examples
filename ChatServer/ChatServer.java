@@ -101,10 +101,6 @@ public class ChatServer {
    * MessageServer holds:
    * - A buffer of all messages.
    * - A list of all connections.
-   *
-   * @author Ian Duffy, 11356066
-   * @author Richard Kavanagh, 11482928
-   * @author Darren Brogan, 11424362
    */
   private static class MessageServer extends Thread {
     /// Message buffer.
@@ -205,10 +201,6 @@ public class ChatServer {
   /**
    * Connection is a structure that holds all information that is related to a
    * connection this includes the socket, producer, consumer and a nickname.
-   *
-   * @author Ian Duffy, 11356066
-   * @author Richard Kavanagh, 11482928
-   * @author Darren Brogan, 11424362
    */
   private static class Connection {
     // Public access due to this just being a structure.
@@ -242,10 +234,6 @@ public class ChatServer {
   /**
    * Recieves messages from MessageServer and stores them in a buffer which is
    * eventually sent to the client.
-   *
-   * @author Ian Duffy, 11356066
-   * @author Richard Kavanagh, 11482928
-   * @author Darren Brogan, 11424362
    */
   private static class Consumer extends Thread {
     /// Buffer of messages.
@@ -325,10 +313,6 @@ public class ChatServer {
 
   /**
    * Recieves messages from the Connection and sends them to MessageServer.
-   *
-   * @author Ian Duffy, 11356066
-   * @author Richard Kavanagh, 11482928
-   * @author Darren Brogan, 11424362
    */
   private static class Producer extends Thread {
     /// Reference to MessageServer.
