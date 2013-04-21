@@ -261,7 +261,8 @@ public class ChatServer {
       // Setup outstream.
       try {
         this.outstream = new PrintWriter(
-          new OutputStreamWriter(connection.socket.getOutputStream(), "UTF-8")
+          new OutputStreamWriter(connection.socket.getOutputStream(), "UTF-8"),
+          true
         );
       } catch(Exception e) {
         System.out.println(e.getMessage());

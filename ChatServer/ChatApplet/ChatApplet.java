@@ -36,8 +36,13 @@ class ChatClient extends Panel implements Runnable {
 
     try {
       s = new Socket(host, port);
-      pw = new PrintWriter(s.getOutputStream(), true);
-      br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+      pw = new PrintWriter(
+        new OutputStreamWriter(s.getOutputStream(), "UTF-8"),
+        true
+      );
+      br = new BufferedReader(
+        new InputStreamReader(s.getInputStream(), "UTF-8")
+      );
 
       /* Send nickname to chat server */
       pw.println(nickname);
