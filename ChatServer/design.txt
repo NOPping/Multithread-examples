@@ -69,7 +69,7 @@ connection this includes the socket, producer, consumer and a nickname.
 Socket to the clients connection. 
 
     Producer producer = null
-Producer for listen for messages from the client. 
+Producer to listen for messages from the client. 
 
     Consumer consumer = null
 Consumer to send messages to the client. 
@@ -83,7 +83,7 @@ Closes all the streams involved in the connection.
 
 ### Producer
 
-Recives messages from the Connection and sends them to MessageServer.
+Recieves messages from the Connection and sends them to MessageServer.
 
 #### Private Attributes
     MessageServer messageServer
@@ -111,8 +111,8 @@ Closes the instream.
 
 ### Consumer 
 
-Recives messages from MessageServer and stores them in a buffer which is
-evenutally sent to the client.
+Recieves messages from MessageServer and stores them in a buffer which is
+eventually sent to the client.
 
 #### Private Attributes
     MessageServer messageServer
