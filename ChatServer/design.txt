@@ -2,7 +2,9 @@ Design:
 -------
 
 A web based version of the design may be viewed at:
-http://imduffy15.github.io/Multithread-examples/ChatServer/
+http://student.computing.dcu.ie/~duffyi3/ChatServer/
+
+![Data Flow Diagram](http://student.computing.dcu.ie/~duffyi3/ChatServer/DataFlow.png)
 
 Our chat server is made up four different classes:
 
