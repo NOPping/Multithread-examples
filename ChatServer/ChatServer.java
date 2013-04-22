@@ -384,9 +384,9 @@ public class ChatServer {
       } catch(IOException e) {
         System.out.println(e.getMessage());
       } catch(InterruptedException e) {
-        System.out.println(e.getMessage());
+        Thread.currentThread().interrupt();
       }
-      interrupt();
+      Thread.currentThread().interrupt();
     }
 
     /// Overrides the default thread interrupt to
